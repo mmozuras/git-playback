@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -e
+
+branch=$1
+file=$2
+
+foreach_git_revision() {
+  command=$1
+
+  revisions=`git rev-list --reverse ${branch}`
+
+  for revision in $revisions; do
+      git checkout --quiet $revision
+      echo $command >&2
+      eval $command
+      git reset --hard
+  done
+  git checkout --quiet $branch
+}
+
+dir=`dirname $0`
+js=`cat ${dir}/playback.js`
+css=`cat ${dir}/playback.css`
+formatStart="<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <title>Git Playback</title>
+
+    <style type='text/css'>${css}</style>
+    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/monokai.min.css' type='text/css'>
+</head>
+<body>
+    <div id='playback'>
+        <div class='container'>"
+
+formatEnd="</div>
+    </div>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+    <script src='http://yandex.st/highlightjs/6.2/highlight.min.js'></script>
+    <script type='text/javascript'>${js}</script>
+    <script>
+      jQuery(document).ready(function(){
+          jQuery('#playback').playback();
+          hljs.initHighlightingOnLoad();
+      });
+    </script>
+</body>
+</html>"
+
+output_file() {
+  if [ -f $file ];
+  then
+    echo '<div><pre><code>' >> output.html
+    cat $file >> output.html
+    echo '</code></pre></div>' >> output.html
+  fi
+}
+
+echo $formatStart >> output.html
+foreach_git_revision output_file
+echo $formatEnd >> output.html
