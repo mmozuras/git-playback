@@ -2,9 +2,10 @@
 
 set -e
 
-command=$1
+branch=$1
+command=$2
 
-revisions=`git rev-list --reverse HEAD`
+revisions=`git rev-list --reverse ${branch}`
 
 for revision in $revisions; do
     git checkout --quiet $revision
@@ -12,4 +13,4 @@ for revision in $revisions; do
     eval $command
     git reset --hard
 done
-git checkout --quiet master
+git checkout --quiet $branch
