@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+
+command=$1
+
+revisions=`git rev-list --reverse HEAD`
+
+for revision in $revisions; do
+    git checkout --quiet $revision
+    echo $command >&2
+    eval $command
+    git reset --hard
+done
+git checkout --quiet master
