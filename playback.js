@@ -5,15 +5,20 @@
       $('.container', $(this)).children().wrapAll('<div class=control/>');
 
       var elem = $(this),
-          control = $('.control',elem),
+          control = $('.control', elem),
           total = control.children().size(),
           width = control.children().outerWidth(),
           height = control.children().outerHeight(),
           start = 0,
-          next = 0, prev = 0, number = 0, current = 0, loaded, active, position, direction;
+          next = 0,
+          prev = 0,
+          current = 0,
+          active,
+          position,
+          direction;
 
       function animate(direction) {
-        if (!active && loaded) {
+        if (!active) {
           active = true;
           switch(direction) {
             case 'next':
@@ -40,18 +45,19 @@
           });
 
           control.animate({ left: direction }, 350, function(){
-            control.css({
-              left: -width
-            });
+            control.css({ left: -width });
+
             control.children(':eq('+ next +')').css({
               left: width,
               zIndex: 5
             });
+
             control.children(':eq('+ prev +')').css({
               left: width,
               display: 'none',
               zIndex: 0
             });
+
             active = false;
           });
         }
@@ -81,15 +87,10 @@
         left: -width
       });
 
-      $('.container', elem).css({
-        display: 'block'
-      });
+      $('.container', elem).css({ display: 'block' });
+      control.children(':eq(' + start + ')').show();
 
-      control.children(':eq(' + start + ')').fadeIn(function(){
-        loaded = true;
-      });
-
-      $("body").keydown(function(e) {
+      $('body').keydown(function(e) {
         if(e.keyCode == 37) {
           animate('prev');
         }
