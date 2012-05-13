@@ -1,12 +1,12 @@
 .container {
   margin-left: auto;
   margin-right: auto;
-  width: 800px;
+  width: 1000px;
   display:none;
 }
 
 .container div {
-  width: 800px;
+  width: 1000px;
   height: 800px;
   display:block;
 }
@@ -24,5 +24,5 @@ li {
 }
 
 pre {
-  min-width: 380px;
+  min-width: 480px;
 }

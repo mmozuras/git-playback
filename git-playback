@@ -3,9 +3,41 @@
 set -e
 
 files=$@
+output='playback.html'
+
+dir=`dirname $0`
+js=`cat ${dir}/playback.js`
+css=`cat ${dir}/playback.css`
+htmlStart="<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <title>Git Playback</title>
+
+    <style type='text/css'>${css}</style>
+    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/monokai.min.css' type='text/css'>
+</head>
+<body>
+    <div id='playback'>
+        <div class='container'>"
+
+htmlEnd="</div>
+    </div>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+    <script src='http://yandex.st/highlightjs/6.2/highlight.min.js'></script>
+    <script type='text/javascript'>${js}</script>
+    <script>
+      jQuery(document).ready(function(){
+          jQuery('#playback').playback();
+          hljs.initHighlightingOnLoad();
+      });
+    </script>
+</body>
+</html>"
 
 get_git_branch() {
-    git branch 2>/dev/null|grep -e ^* | tr -d \*
+  git branch 2>/dev/null|grep -e ^* | tr -d \*
 }
 
 foreach_git_revision() {
@@ -23,38 +55,6 @@ foreach_git_revision() {
   git checkout --quiet $branch
 }
 
-dir=`dirname $0`
-js=`cat ${dir}/playback.js`
-css=`cat ${dir}/playback.css`
-formatStart="<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='utf-8'>
-    <title>Git Playback</title>
-
-    <style type='text/css'>${css}</style>
-    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/monokai.min.css' type='text/css'>
-</head>
-<body>
-    <div id='playback'>
-        <div class='container'>"
-
-formatEnd="</div>
-    </div>
-
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
-    <script src='http://yandex.st/highlightjs/6.2/highlight.min.js'></script>
-    <script type='text/javascript'>${js}</script>
-    <script>
-      jQuery(document).ready(function(){
-          jQuery('#playback').playback();
-          hljs.initHighlightingOnLoad();
-      });
-    </script>
-</body>
-</html>"
-
-output='output.html'
 output_file() {
   echo '<div><ul>' >> $output
   for file in $files
@@ -70,6 +70,6 @@ output_file() {
 }
 
 rm -f $output
-echo $formatStart >> $output
+echo $htmlStart >> $output
 foreach_git_revision output_file
-echo $formatEnd >> $output
+echo $htmlEnd >> $output
