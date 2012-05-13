@@ -54,15 +54,17 @@ formatEnd="</div>
 </body>
 </html>"
 
+output='output.html'
 output_file() {
   if [ -f $file ];
   then
-    echo '<div><pre><code>' >> output.html
-    cat $file >> output.html
-    echo '</code></pre></div>' >> output.html
+    echo '<div><pre><code>' >> $output
+    cat $file >> $output
+    echo '</code></pre></div>' >> $output
   fi
 }
 
-echo $formatStart >> output.html
+rm -f $output
+echo $formatStart >> $output
 foreach_git_revision output_file
-echo $formatEnd >> output.html
+echo $formatEnd >> $output
