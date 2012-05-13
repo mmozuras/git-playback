@@ -2,10 +2,14 @@
 
 set -e
 
-branch=$1
-file=$2
+file=$1
+
+get_git_branch() {
+    git branch 2>/dev/null|grep -e ^* | tr -d \*
+}
 
 foreach_git_revision() {
+  branch=`get_git_branch`
   command=$1
 
   revisions=`git rev-list --reverse ${branch}`
