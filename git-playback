@@ -56,17 +56,17 @@ formatEnd="</div>
 
 output='output.html'
 output_file() {
-  echo '<div>' >> $output
+  echo '<div><ul>' >> $output
   for file in $files
   do
     if [ -f $file ];
     then
-      echo '<pre><code>' >> $output
+      echo '<li><pre><code>' >> $output
       cat $file >> $output
-      echo '</code></pre>' >> $output
+      echo '</code></pre></li>' >> $output
     fi
   done
-  echo '</div>' >> $output
+  echo '</ul></div>' >> $output
 }
 
 rm -f $output

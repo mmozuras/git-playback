@@ -4,12 +4,25 @@
   width: 800px;
   display:none;
 }
+
 .container div {
   width: 800px;
   height: 800px;
   display:block;
 }
+
 body {
   background: #272822;
 }
 
+ul {
+  list-style: none;
+}
+
+li {
+  float: left;
+}
+
+pre {
+  min-width: 380px;
+}
