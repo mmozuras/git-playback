@@ -5,7 +5,10 @@ set -e
 files=$@
 output='playback.html'
 
-dir=`dirname $0`
+source_file="${BASH_SOURCE[0]}"
+while [ -h "$source_file" ]; do source_file="$(readlink "$source_file")"; done
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_file")" && pwd)"
+unset source_file
 js=`cat ${dir}/playback.js`
 css=`cat ${dir}/playback.css`
 htmlStart="<!DOCTYPE html>
