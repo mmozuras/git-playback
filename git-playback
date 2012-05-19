@@ -6,11 +6,14 @@ files=$@
 output='playback.html'
 
 source_file="${BASH_SOURCE[0]}"
-while [ -h "$source_file" ]; do source_file="$(readlink "$source_file")"; done
-dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_file")" && pwd)"
+while [ -h "$source_file" ]; do
+  source_file="$(readlink "$source_file")";
+done
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_file")" && pwd)"
 unset source_file
-js=`cat ${dir}/playback.js`
-css=`cat ${dir}/playback.css`
+
+js=`cat ${script_dir}/playback.js`
+css=`cat ${script_dir}/playback.css`
 htmlStart="<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -58,17 +61,26 @@ foreach_git_revision() {
 }
 
 output_file() {
-  echo '<div><ul>' >> $output
+  no_files=true
   for file in $files
   do
-    if [ -f $file ];
-    then
-      echo '<li><pre><code>' >> $output
-      cat $file >> $output
-      echo '</code></pre></li>' >> $output
+    if [ -f $file ] && [ -s $file ]; then
+      no_files=false
     fi
   done
-  echo '</ul></div>' >> $output
+
+  if ! $no_files; then
+    echo '<div><ul>' >> $output
+    for file in $files
+    do
+      echo '<li><pre><code>' >> $output
+      if [ -f $file ]; then
+        cat $file >> $output
+      fi
+      echo '</code></pre></li>' >> $output
+    done
+    echo '</ul></div>' >> $output
+  fi
 }
 
 rm -f $output
