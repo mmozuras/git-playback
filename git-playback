@@ -2,6 +2,19 @@
 
 set -e
 
+if [ $# -eq 0 ]; then
+  set -- -h
+fi
+
+OPTS_SPEC="\
+git playback file1 file2 ...
+--
+h,help        show the help
+s,start=      specify start revision
+e,end=        specify end revision
+"
+eval "$(echo "$OPTS_SPEC" | git rev-parse --parseopt -- "$@" || echo exit $?)"
+
 get_git_branch() {
   git branch 2>/dev/null | grep -e ^* | tr -d \*
 }
@@ -19,8 +32,9 @@ while [ $# -gt 0 ]; do
   opt="$1"
   shift
   case "$opt" in
-    --start) start_revision="$1"; shift;;
-    --end) end_revision="$1"; shift;;
+    -s) start_revision="$1"; shift;;
+    -e) end_revision="$1"; shift;;
+    --) break ;;
     *) files+=("$opt") ;;
   esac
 done
@@ -66,7 +80,7 @@ htmlEnd="</div>
 foreach_git_revision() {
   command=$1
 
-  revisions=`git rev-list --reverse ${end_revision} ^${start_revision}~`
+  revisions=`git rev-list --reverse ${end_revision} ^${start_revision}`
 
   for revision in $revisions; do
       git checkout --quiet $revision
