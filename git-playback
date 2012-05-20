@@ -2,13 +2,25 @@
 
 set -e
 
+get_git_branch() {
+  git branch 2>/dev/null | grep -e ^* | tr -d \*
+}
+
+get_root_commit() {
+  git rev-list --max-parents=0 HEAD 2>/dev/null | tr -d \*
+}
+
 files=()
 output='playback.html'
+start_revision=`get_root_commit`
+end_revision=`get_git_branch`
 
 while [ $# -gt 0 ]; do
   opt="$1"
   shift
   case "$opt" in
+    --start) start_revision="$1"; shift;;
+    --end) end_revision="$1"; shift;;
     *) files+=("$opt") ;;
   esac
 done
@@ -50,27 +62,18 @@ htmlEnd="</div>
 </body>
 </html>"
 
-get_git_branch() {
-  git branch 2>/dev/null | grep -e ^* | tr -d \*
-}
-
-get_root_commit() {
-  git rev-list --max-parents=0 HEAD 2>/dev/null | tr -d \*
-}
 
 foreach_git_revision() {
-  branch=`get_git_branch`
-  root=`get_root_commit`
   command=$1
 
-  revisions=`git rev-list --reverse ${root} ${branch}`
+  revisions=`git rev-list --reverse ${end_revision} ^${start_revision}~`
 
   for revision in $revisions; do
       git checkout --quiet $revision
       eval $command
       git reset --hard
   done
-  git checkout --quiet $branch
+  git checkout --quiet $end_revision
 }
 
 output_file() {
