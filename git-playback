@@ -51,14 +51,19 @@ htmlEnd="</div>
 </html>"
 
 get_git_branch() {
-  git branch 2>/dev/null|grep -e ^* | tr -d \*
+  git branch 2>/dev/null | grep -e ^* | tr -d \*
+}
+
+get_root_commit() {
+  git rev-list --max-parents=0 HEAD 2>/dev/null | tr -d \*
 }
 
 foreach_git_revision() {
   branch=`get_git_branch`
+  root=`get_root_commit`
   command=$1
 
-  revisions=`git rev-list --reverse ${branch}`
+  revisions=`git rev-list --reverse ${root} ${branch}`
 
   for revision in $revisions; do
       git checkout --quiet $revision
