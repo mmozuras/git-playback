@@ -2,8 +2,16 @@
 
 set -e
 
-files=$@
+files=()
 output='playback.html'
+
+while [ $# -gt 0 ]; do
+  opt="$1"
+  shift
+  case "$opt" in
+    *) files+=("$opt") ;;
+  esac
+done
 
 source_file="${BASH_SOURCE[0]}"
 while [ -h "$source_file" ]; do
@@ -62,7 +70,7 @@ foreach_git_revision() {
 
 output_file() {
   no_files=true
-  for file in $files
+  for file in ${files[@]}
   do
     if [ -f $file ] && [ -s $file ]; then
       no_files=false
@@ -71,7 +79,7 @@ output_file() {
 
   if ! $no_files; then
     echo '<div><ul>' >> $output
-    for file in $files
+    for file in ${files[@]}
     do
       echo '<li><pre><code>' >> $output
       if [ -f $file ]; then
