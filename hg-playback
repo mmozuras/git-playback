@@ -1,0 +1,120 @@
+#!/bin/bash
+
+set -e
+
+if [ $# -eq 0 ]; then
+  set -- -h
+fi
+
+#OPTS_SPEC="\
+#hg playback file1 file2 ...
+#--
+#h,help        show the help
+#s,start=      specify start revision
+#e,end=        specify end revision
+#"
+#eval "$(echo "$OPTS_SPEC" | git rev-parse --parseopt -- "$@" || echo exit $?)"
+
+get_hg_branch() {
+  hg branch 
+}
+
+get_root_commit() {
+  #git rev-list --max-parents=0 HEAD 2>/dev/null | tr -d \*
+  hg log --template '{node}\n' -l 1
+}
+
+files=()
+output='playback.html'
+start_revision=`get_root_commit`
+end_revision=`get_hg_branch`
+
+while [ $# -gt 0 ]; do
+  opt="$1"
+  shift
+  case "$opt" in
+    -s) start_revision="$1"; shift;;
+    -e) end_revision="$1"; shift;;
+    --) break ;;
+    *) files+=("$opt") ;;
+  esac
+done
+
+source_file="${BASH_SOURCE[0]}"
+while [ -h "$source_file" ]; do
+  source_file="$(readlink "$source_file")";
+done
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_file")" && pwd)"
+unset source_file
+
+js=`cat ${script_dir}/playback.js`
+css=`cat ${script_dir}/playback.css`
+htmlStart="<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <title>Git Playback</title>
+
+    <style type='text/css'>${css}</style>
+    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/monokai.min.css' type='text/css'>
+</head>
+<body>
+    <div id='playback'>
+        <div class='container'>"
+
+htmlEnd="</div>
+    </div>
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
+    <script src='http://yandex.st/highlightjs/6.2/highlight.min.js'></script>
+    <script type='text/javascript'>${js}</script>
+    <script>
+      jQuery(document).ready(function(){
+          jQuery('#playback').playback();
+          hljs.initHighlightingOnLoad();
+      });
+    </script>
+</body>
+</html>"
+
+
+foreach_hg_revision() {
+  command=$1
+
+  revisions=`hg log --template '{node}\n'`
+
+  for revision in $revisions; do
+      hg checkout --quiet $revision
+      eval $command
+      hg up -C 
+  done
+  hg checkout
+}
+
+output_file() {
+  no_files=true
+  for file in ${files[@]}
+  do
+    if [ -f $file ] && [ -s $file ]; then
+      no_files=false
+    fi
+  done
+
+  if ! $no_files; then
+    echo '<div><ul>' >> $output
+    for file in ${files[@]}
+    do
+      echo '<li><pre><code>' >> $output
+      if [ -f $file ]; then
+        cat $file >> $output
+      fi
+      echo '</code></pre></li>' >> $output
+    done
+    echo '</ul></div>' >> $output
+  fi
+}
+
+rm -f $output
+echo $htmlStart >> $output
+foreach_hg_revision output_file
+echo $htmlEnd >> $output
