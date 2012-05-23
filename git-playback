@@ -34,8 +34,7 @@ while [ $# -gt 0 ]; do
   case "$opt" in
     -s) start_revision="$1"; shift;;
     -e) end_revision="$1"; shift;;
-    --) break ;;
-    *) files+=("$opt") ;;
+    *) files+=("$1") ;;
   esac
 done
 
