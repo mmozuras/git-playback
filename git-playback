@@ -12,6 +12,8 @@ git playback file1 file2 ...
 h,help        show the help
 s,start=      specify start revision
 e,end=        specify end revision
+t,style=      specify style to be used in output
+l,stylelist   list all available styles
 "
 eval "$(echo "$OPTS_SPEC" | git rev-parse --parseopt -- "$@" || echo exit $?)"
 
@@ -27,6 +29,8 @@ files=()
 output='playback.html'
 start_revision=`get_root_commit`
 end_revision=`get_git_branch`
+style='default'
+available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai)
 
 while [ $# -gt 0 ]; do
   opt="$1"
@@ -34,9 +38,25 @@ while [ $# -gt 0 ]; do
   case "$opt" in
     -s) start_revision="$1"; shift;;
     -e) end_revision="$1"; shift;;
+    -t) style="$1"; shift;;
+    -l) echo ${available_styles[@]}; exit;;
     *) files+=("$1") ;;
   esac
 done
+
+styleAvailable() {
+  for i in ${available_styles[@]}; do
+    if [ $i == $1 ]; then
+      return 1
+    fi
+  done
+  return 0
+}
+
+if styleAvailable $style; then
+  echo "Style is not available: ${style}. You can list available styles with --stylelist."
+  exit 1
+fi
 
 source_file="${BASH_SOURCE[0]}"
 while [ -h "$source_file" ]; do
@@ -54,7 +74,7 @@ htmlStart="<!DOCTYPE html>
     <title>Git Playback</title>
 
     <style type='text/css'>${css}</style>
-    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/monokai.min.css' type='text/css'>
+    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/${style}.min.css' type='text/css'>
 </head>
 <body>
     <div id='playback'>
@@ -70,6 +90,9 @@ htmlEnd="</div>
       jQuery(document).ready(function(){
           jQuery('#playback').playback();
           hljs.initHighlightingOnLoad();
+
+          var background = jQuery('pre code').css('background-color');
+          jQuery('body').css('background-color', background);
       });
     </script>
 </body>
