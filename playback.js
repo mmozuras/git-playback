@@ -39,27 +39,19 @@
             break;
           }
 
-          control.children(':eq('+ next +')').css({
-            left: position,
-            display: 'block'
-          });
+          nextElem = control.children(':eq('+ next +')', elem);
+          prevElem = control.children(':eq('+ prev +')', elem);
 
-          control.animate({ left: direction }, 350, function(){
-            control.css({ left: -width });
+          nextElem
+            .css({ zIndex: 100 })
+            .fadeIn(200, function() {
+              control.animate({ height: nextElem.outerHeight() }, 200, function() {
+                prevElem.css({ display: 'none', zIndex: 0 });
+                nextElem.css({ zIndex: 0 });
 
-            control.children(':eq('+ next +')').css({
-              left: width,
-              zIndex: 5
+                active = false;
+              });
             });
-
-            control.children(':eq('+ prev +')').css({
-              left: width,
-              display: 'none',
-              zIndex: 0
-            });
-
-            active = false;
-          });
         }
       }
 
