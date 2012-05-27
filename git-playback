@@ -26,7 +26,7 @@ get_root_commit() {
 }
 
 files=()
-output='playback.html'
+output_file='playback.html'
 start_revision=`get_root_commit`
 end_revision=`get_git_branch`
 style='default'
@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-styleAvailable() {
+is_style_available() {
   for i in ${available_styles[@]}; do
     if [ $i == $1 ]; then
       return 1
@@ -53,7 +53,7 @@ styleAvailable() {
   return 0
 }
 
-if styleAvailable $style; then
+if is_style_available $style; then
   echo "Style is not available: ${style}. You can list available styles with --stylelist."
   exit 1
 fi
@@ -109,10 +109,11 @@ foreach_git_revision() {
       eval $command
       git reset --hard
   done
+
   git checkout --quiet $end_revision
 }
 
-output_file() {
+output_to_file() {
   no_files=true
   for file in ${files[@]}
   do
@@ -122,20 +123,20 @@ output_file() {
   done
 
   if ! $no_files; then
-    echo '<div><ul>' >> $output
+    echo '<div><ul>' >> $output_file
     for file in ${files[@]}
     do
-      echo '<li><pre><code>' >> $output
+      echo '<li><pre><code>' >> $output_file
       if [ -f $file ]; then
-        cat $file >> $output
+        cat $file >> $output_file
       fi
-      echo '</code></pre></li>' >> $output
+      echo '</code></pre></li>' >> $output_file
     done
-    echo '</ul></div>' >> $output
+    echo '</ul></div>' >> $output_file
   fi
 }
 
-rm -f $output
-echo $htmlStart >> $output
-foreach_git_revision output_file
-echo $htmlEnd >> $output
+rm -f $output_file
+echo $htmlStart >> $output_file
+foreach_git_revision output_to_file
+echo $htmlEnd >> $output_file
