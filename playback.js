@@ -44,10 +44,15 @@
 
           nextElem
             .css({ zIndex: 100 })
-            .fadeIn(200, function() {
+            .fadeIn(0, function() {
               control.animate({ height: nextElem.outerHeight() }, 200, function() {
                 prevElem.css({ display: 'none', zIndex: 0 });
+                $('.old', prevElem).removeClass('hide');
+                $('.new', prevElem).removeClass('show');
+
                 nextElem.css({ zIndex: 0 });
+                $('.old', nextElem).addClass('hide');
+                $('.new', nextElem).addClass('show');
 
                 active = false;
               });

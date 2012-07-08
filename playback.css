@@ -11,6 +11,37 @@
   display:block;
 }
 
+.new {
+  max-height: 0px;
+  opacity: 0;
+  overflow: hidden;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  -transition: all 1s ease-in-out;
+}
+
+.old {
+  max-height: 16px;
+  opacity: 1;
+  overflow: hidden;
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  -transition: all 1s ease-in-out;
+}
+
+.show {
+  max-height: 16px;
+  opacity: 1;
+}
+
+.hide {
+  background-color: red;
+  max-height: 0px;
+  opacity: 0;
+}
+
 ul {
   list-style: none;
 }
