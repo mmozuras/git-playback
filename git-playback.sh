@@ -128,12 +128,55 @@ output_to_file() {
     do
       echo '<li><pre><code>' >> $output_file
       if [ -f $file ]; then
-        cat $file >> $output_file
+        eval "$(git diff --unified=999999 HEAD~1 $file | read_diff >> $output_file)"
       fi
       echo '</code></pre></li>' >> $output_file
     done
     echo '</ul></div>' >> $output_file
   fi
+}
+
+read_diff() {
+  OIFS=$IFS
+  IFS=''
+
+  read -r s
+
+  while [[ $? -eq 0 ]]
+  do
+    if [[ $s == diff*  ]] ||
+       [[ $s == +++*   ]] ||
+       [[ $s == ---*   ]] ||
+       [[ $s == @@*    ]] ||
+       [[ $s == index* ]]; then
+      cls='none'
+    elif [[ $s == +*   ]]; then
+      s=$(sed 's/^\s*./ /g' <<<"$s")
+      cls='new'
+    elif [[ $s == -*    ]]; then
+      s=$(sed 's/^\s*./ /g' <<<"$s")
+      cls='old'
+    else
+      cls=
+    fi
+
+    if [[ "$cls" == 'none' ]]; then
+      cls='none'
+    else [[ "$cls" ]]
+      echo
+    fi
+
+    if [[ "$cls" == 'none' ]]; then
+      cls='none'
+    elif [[ "$cls" ]]; then
+      echo -n '<div class="'${cls}'">'${s}'</div>'
+    else
+      echo -n ${s}
+    fi
+    read -r s
+  done
+
+  IFS=$OIFS
 }
 
 rm -f $output_file
