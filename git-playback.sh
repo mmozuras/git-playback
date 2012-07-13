@@ -162,10 +162,6 @@ read_diff() {
 
     if [[ "$cls" == 'none' ]]; then
       cls='none'
-    fi
-
-    if [[ "$cls" == 'none' ]]; then
-      cls='none'
     elif [[ "$cls" ]]; then
       echo -e '<div class="'${cls}'">'${s}'</div>\c'
     else
