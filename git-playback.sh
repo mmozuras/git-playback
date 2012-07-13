@@ -30,7 +30,7 @@ output_file='playback.html'
 start_revision=`get_root_commit`
 end_revision=`get_git_branch`
 style='default'
-available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai)
+available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai xcode pojoaque)
 
 while [ $# -gt 0 ]; do
   opt="$1"
@@ -74,7 +74,7 @@ htmlStart="<!DOCTYPE html>
     <title>Git Playback</title>
 
     <style type='text/css'>${css}</style>
-    <link rel='stylesheet' href='http://yandex.st/highlightjs/6.2/styles/${style}.min.css' type='text/css'>
+    <link rel='stylesheet' href='http://yandex.st/highlightjs/7.0/styles/${style}.min.css' type='text/css'>
 </head>
 <body>
     <div id='playback'>
@@ -84,7 +84,7 @@ htmlEnd="</div>
     </div>
 
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
-    <script src='http://yandex.st/highlightjs/6.2/highlight.min.js'></script>
+    <script src='http://yandex.st/highlightjs/7.0/highlight.min.js'></script>
     <script type='text/javascript'>${js}</script>
     <script>
       jQuery(document).ready(function(){
