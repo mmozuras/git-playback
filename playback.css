@@ -5,7 +5,7 @@
   display:none;
 }
 
-.container div {
+div.playback {
   width: 1000px;
   height: 800px;
   display:block;

@@ -123,14 +123,14 @@ output_to_file() {
   done
 
   if ! $no_files; then
-    echo '<div><ul>' >> $output_file
+    echo '<div class="playback"><ul>' >> $output_file
     for file in ${files[@]}
     do
-      echo '<li><pre><code>' >> $output_file
+      echo -e '<li><pre><code>\c' >> $output_file
       if [ -f $file ]; then
         eval "$(git diff --unified=999999 HEAD~1 $file | read_diff >> $output_file)"
       fi
-      echo '</code></pre></li>' >> $output_file
+      echo -e '</code></pre></li>\c' >> $output_file
     done
     echo '</ul></div>' >> $output_file
   fi
@@ -162,16 +162,14 @@ read_diff() {
 
     if [[ "$cls" == 'none' ]]; then
       cls='none'
-    else [[ "$cls" ]]
-      echo
     fi
 
     if [[ "$cls" == 'none' ]]; then
       cls='none'
     elif [[ "$cls" ]]; then
-      echo -n '<div class="'${cls}'">'${s}'</div>'
+      echo -e '<div class="'${cls}'">'${s}'</div>\c'
     else
-      echo -n ${s}
+      echo -e '<div>'${s}'</div>\c'
     fi
     read -r s
   done
