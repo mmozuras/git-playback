@@ -114,15 +114,15 @@ foreach_git_revision() {
 }
 
 output_to_file() {
-  no_files=true
+  has_files=false
   for file in ${files[@]}
   do
     if [ -f $file ] && [ -s $file ]; then
-      no_files=false
+      has_files=true
     fi
   done
 
-  if ! $no_files; then
+  if $has_files; then
     echo '<div class="playback"><ul>' >> $output_file
     for file in ${files[@]}
     do
@@ -149,21 +149,21 @@ read_diff() {
        [[ $s == ---*   ]] ||
        [[ $s == @@*    ]] ||
        [[ $s == index* ]]; then
-      cls='none'
+      class='none'
     elif [[ $s == +*   ]]; then
       s=$(sed 's/^\s*./ /g' <<<"$s")
-      cls='new'
+      class='new'
     elif [[ $s == -*    ]]; then
       s=$(sed 's/^\s*./ /g' <<<"$s")
-      cls='old'
+      class='old'
     else
-      cls=
+      class=
     fi
 
-    if [[ "$cls" == 'none' ]]; then
-      cls='none'
-    elif [[ "$cls" ]]; then
-      echo -e '<div class="'${cls}'">'${s}'</div>\c'
+    if [[ "$class" == 'none' ]]; then
+      class='none'
+    elif [[ "$class" ]]; then
+      echo -e '<div class="'${class}'">'${s}'</div>\c'
     else
       echo -e '<div>'${s}'</div>\c'
     fi
