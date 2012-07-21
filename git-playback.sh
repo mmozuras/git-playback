@@ -128,7 +128,12 @@ output_to_file() {
     do
       echo -e '<li><pre><code>\c' >> $output_file
       if [ -f $file ]; then
-        eval "$(git diff --unified=999999 HEAD~1 $file | read_diff >> $output_file)"
+        line_count="$(git diff --unified=999999 HEAD~1 $file | sed '/^\s*$/d' | wc -l)"
+        if [ $line_count -eq 0 ]; then
+          eval "$(cat $file >> $output_file)"
+        else
+          eval "$(git diff --unified=999999 HEAD~1 $file | read_diff >> $output_file)"
+        fi
       fi
       echo -e '</code></pre></li>\c' >> $output_file
     done
