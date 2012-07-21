@@ -128,7 +128,7 @@ output_to_file() {
     do
       echo -e '<li><pre><code>\c' >> $output_file
       if [ -f $file ]; then
-        line_count="$(git diff --unified=999999 HEAD~1 $file | sed '/^\s*$/d' | wc -l)"
+        line_count="$(git diff --unified=999999 HEAD~1 $file | grep '[^ ]' | wc -l)"
         if [ $line_count -eq 0 ]; then
           eval "$(cat $file >> $output_file)"
         else
@@ -156,10 +156,10 @@ read_diff() {
        [[ $s == index* ]]; then
       class='none'
     elif [[ $s == +*   ]]; then
-      s=$(sed 's/^\s*./ /g' <<<"$s")
+      s=${s#+}
       class='new'
     elif [[ $s == -*    ]]; then
-      s=$(sed 's/^\s*./ /g' <<<"$s")
+      s=${s#-}
       class='old'
     else
       class=
