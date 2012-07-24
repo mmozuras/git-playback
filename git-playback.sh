@@ -158,19 +158,21 @@ read_diff() {
     elif [[ $s == +*   ]]; then
       s=${s#+}
       class='new'
-    elif [[ $s == -*    ]]; then
+    elif [[ $s == -*   ]]; then
       s=${s#-}
       class='old'
     else
+      s=${s# }
       class=
     fi
 
     if [[ "$class" == 'none' ]]; then
       class='none'
     elif [[ "$class" ]]; then
-      echo -e '<div class="'${class}'">'${s}'</div>\c'
+      echo -E '<div class="'${class}'">'${s}
+      echo -e '</div>\c'
     else
-      echo -e '<div>'${s}'</div>\c'
+      echo -E $s
     fi
     read -r s
   done

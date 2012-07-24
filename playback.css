@@ -6,6 +6,7 @@
 }
 
 div.playback {
+  font-size: 13px;
   width: 1000px;
   height: 800px;
   display:block;
@@ -37,7 +38,6 @@ div.playback {
 }
 
 .hide {
-  background-color: red;
   max-height: 0px;
   opacity: 0;
 }
