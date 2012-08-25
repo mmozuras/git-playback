@@ -113,6 +113,31 @@ foreach_git_revision() {
   git checkout --quiet $end_revision
 }
 
+output_start_revision_to_file() {
+  git checkout --quiet $start_revision
+  has_files=false
+  for file in ${files[@]}
+  do
+    if [ -f $file ] && [ -s $file ]; then
+      has_files=true
+    fi
+  done
+
+  if $has_files; then
+    echo '<div class="playback"><ul>' >> $output_file
+    for file in ${files[@]}
+    do
+      echo -e '<li><pre><code>\c' >> $output_file
+      if [ -f $file ]; then
+        eval "$(cat $file >> $output_file)"
+      fi
+      echo -e '</code></pre></li>\c' >> $output_file
+    done
+    echo '</ul></div>' >> $output_file
+  fi
+  git reset --hard
+}
+
 output_to_file() {
   has_files=false
   for file in ${files[@]}
@@ -182,5 +207,6 @@ read_diff() {
 
 rm -f $output_file
 echo $htmlStart >> $output_file
+output_start_revision_to_file
 foreach_git_revision output_to_file
 echo $htmlEnd >> $output_file
