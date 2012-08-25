@@ -13,9 +13,7 @@
           next = 0,
           prev = 0,
           current = 0,
-          active,
-          position,
-          direction;
+          active;
 
       function animate(direction) {
         if (!active) {
@@ -25,16 +23,12 @@
               prev = current;
               next = current + 1;
               next = total === next ? 0 : next;
-              position = width*2;
-              direction = -width*2;
               current = next;
             break;
             case 'prev':
               prev = current;
               next = current - 1;
               next = next === -1 ? total-1 : next;
-              position = 0;
-              direction = 0;
               current = next;
             break;
           }
