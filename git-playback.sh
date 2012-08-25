@@ -30,7 +30,7 @@ output_file='playback.html'
 start_revision=`get_root_commit`
 end_revision=`get_git_branch`
 style='default'
-available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai xcode pojoaque)
+available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai xcode pojoaque tomorrow tomorrow-night tomorrow-night-blue tomorrow-night-eighties tomorrow-night-bright)
 
 while [ $# -gt 0 ]; do
   opt="$1"
