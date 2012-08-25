@@ -18,20 +18,19 @@
       function animate(direction) {
         if (!active) {
           active = true;
+
+          prev = current;
           switch(direction) {
             case 'next':
-              prev = current;
               next = current + 1;
               next = total === next ? 0 : next;
-              current = next;
             break;
             case 'prev':
-              prev = current;
               next = current - 1;
               next = next === -1 ? total-1 : next;
-              current = next;
             break;
           }
+          current = next;
 
           nextElem = control.children(':eq('+ next +')', elem);
           prevElem = control.children(':eq('+ prev +')', elem);
@@ -39,17 +38,34 @@
           nextElem.css({ zIndex: 100 });
           nextElem.css({ display: 'block' });
 
-          control.animate({ height: nextElem.outerHeight() }, 200, function() {
-            prevElem.css({ display: 'none', zIndex: 0 });
-            $('.old', prevElem).removeClass('hide');
-            $('.new', prevElem).removeClass('show');
-
+          function showNextElem() {
             nextElem.css({ zIndex: 0 });
             $('.old', nextElem).addClass('hide');
             $('.new', nextElem).addClass('show');
+          }
+          function hidePrevElem() {
+            prevElem.css({ zIndex: 0 });
+            $('.old', prevElem).removeClass('hide');
+            $('.new', prevElem).removeClass('show');
+          }
 
-            active = false;
-          });
+          switch(direction) {
+            case 'next':
+              control.animate({ height: nextElem.outerHeight() }, 200, function() {
+                prevElem.css({ display: 'none' });
+                hidePrevElem();
+                showNextElem();
+              });
+            break;
+            case 'prev':
+              showNextElem();
+              control.animate({ height: nextElem.outerHeight() }, 200, function() {
+                hidePrevElem();
+              });
+              prevElem.css({ display: 'none' });
+            break;
+          }
+          active = false;
         }
       }
 
