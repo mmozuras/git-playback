@@ -12,8 +12,8 @@ default:
 install: uninstall
 	@mkdir $(DESTDIR)/$(gitdir)/git-playback.js/
 	@mkdir $(DESTDIR)/$(gitdir)/git-playback.css/
-	cp -f git-playback.js/*.js $(DESTDIR)/$(gitdir)/git-playback.js/
-	cp -f git-playback.css/*.css $(DESTDIR)/$(gitdir)/git-playback.css/
+	cp -f git-playback.js/* $(DESTDIR)/$(gitdir)/git-playback.js/
+	cp -f git-playback.css/* $(DESTDIR)/$(gitdir)/git-playback.css/
 	cp -f git-playback.sh $(DESTDIR)/$(gitdir)/git-playback
 
 uninstall:

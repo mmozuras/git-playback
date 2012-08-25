@@ -66,7 +66,10 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_f
 unset source_file
 
 js=`cat ${script_dir}/git-playback.js/playback.js`
+jquery=`cat ${script_dir}/git-playback.js/jquery.js`
+highlight=`cat ${script_dir}/git-playback.js/highlight.js`
 css=`cat ${script_dir}/git-playback.css/playback.css`
+stylecss=`cat ${script_dir}/git-playback.css/${style}.css`
 htmlStart="<!DOCTYPE html>
 <html lang='en'>
 <head>
@@ -74,7 +77,7 @@ htmlStart="<!DOCTYPE html>
     <title>Git Playback</title>
 
     <style type='text/css'>${css}</style>
-    <link rel='stylesheet' href='http://yandex.st/highlightjs/7.0/styles/${style}.min.css' type='text/css'>
+    <style type='text/css'>${stylecss}</style>
 </head>
 <body>
     <div id='playback'>
@@ -83,8 +86,8 @@ htmlStart="<!DOCTYPE html>
 htmlEnd="</div>
     </div>
 
-    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'></script>
-    <script src='http://yandex.st/highlightjs/7.0/highlight.min.js'></script>
+    <script type='text/javascript'>${jquery}</script>
+    <script type='text/javascript'>${highlight}</script>
     <script type='text/javascript'>${js}</script>
     <script>
       jQuery(document).ready(function(){
