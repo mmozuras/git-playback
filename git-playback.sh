@@ -65,8 +65,8 @@ done
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd -P "$(dirname "$source_file")" && pwd)"
 unset source_file
 
-js=`cat ${script_dir}/playback.js`
-css=`cat ${script_dir}/playback.css`
+js=`cat ${script_dir}/git-playback.js/playback.js`
+css=`cat ${script_dir}/git-playback.css/playback.css`
 htmlStart="<!DOCTYPE html>
 <html lang='en'>
 <head>

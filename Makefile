@@ -3,26 +3,20 @@ gitdir ?= $(shell git --exec-path)
 
 gitver ?= $(word 3,$(shell git --version))
 
-INSTALL ?= install
-INSTALL_DATA = $(INSTALL) -c -m 0644
-INSTALL_EXE = $(INSTALL) -c -m 0755
-INSTALL_DIR = $(INSTALL) -c -d -m 0755
-
 default:
 	@echo "git-playback doesn't need to be built."
-	@echo "Just copy it (including playback.css and playback.js) somewhere on your PATH, like /usr/local/bin."
+	@echo "Just copy it (including git-playback.css and git-playback.js) somewhere on your PATH, like /usr/local/bin."
+	@echo "This can also be done by running 'make install'"
 	@false
 
-install: install-exe install-js install-css
+install: uninstall
+	@mkdir $(DESTDIR)/$(gitdir)/git-playback.js/
+	@mkdir $(DESTDIR)/$(gitdir)/git-playback.css/
+	cp -f git-playback.js/*.js $(DESTDIR)/$(gitdir)/git-playback.js/
+	cp -f git-playback.css/*.css $(DESTDIR)/$(gitdir)/git-playback.css/
+	cp -f git-playback.sh $(DESTDIR)/$(gitdir)/git-playback
 
-install-exe: git-playback.sh
-	$(INSTALL_DIR) $(DESTDIR)/$(gitdir)
-	$(INSTALL_EXE) $< $(DESTDIR)/$(gitdir)/git-playback
-
-install-js: playback.js
-	$(INSTALL_DIR) $(DESTDIR)/$(gitdir)
-	$(INSTALL_DATA) $< $(DESTDIR)/$(gitdir)
-
-install-css: playback.css
-	$(INSTALL_DIR) $(DESTDIR)/$(gitdir)
-	$(INSTALL_DATA) $< $(DESTDIR)/$(gitdir)
+uninstall:
+	@rm -rf $(DESTDIR)/$(gitdir)/git-playback.css/
+	@rm -rf $(DESTDIR)/$(gitdir)/git-playback.js/
+	@rm -f $(DESTDIR)/$(gitdir)/git-playback
