@@ -8,6 +8,8 @@ fi
 
 OPTS_SPEC="\
 git playback file1 file2 ...
+
+Use left and right arrows to navigate the output.
 --
 h,help        show the help
 s,start=      specify start revision. Default: root commit
