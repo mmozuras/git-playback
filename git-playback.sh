@@ -96,6 +96,9 @@ htmlEnd="</div>
 
           var background = jQuery('pre code').css('background-color');
           jQuery('body').css('background-color', background);
+
+          var foreground = jQuery('code > span.keyword').css('color');
+          jQuery('pre.message').css('border-color', foreground);
       });
     </script>
 </body>
@@ -160,11 +163,18 @@ write_diff() {
   fi
 }
 
+write_commit_message() {
+  echo '<pre class="message" style="border-bottom: solid;border-bottom-width: 1px"><code class="no-highlight">' >> $output_file
+  eval "$(git log -1 --pretty=format:'<span>%h</span><span>: </span><span class="keyword">%s</span>' --abbrev-commit >> $output_file)"
+  echo '</code></pre>' >> $output_file
+}
+
 write_start_revision() {
   git checkout --quiet $start_revision
 
   if has_files; then
     write_playback_opening_tag
+    write_commit_message
     for file in ${files[@]}
     do
       write_code_opening_tag
@@ -180,6 +190,7 @@ write_start_revision() {
 write_revision() {
   if has_files; then
     write_playback_opening_tag
+    write_commit_message
     for file in ${files[@]}
     do
       write_code_opening_tag
