@@ -55,6 +55,7 @@
                 prevElem.css({ display: 'none' });
                 hidePrevElem();
                 showNextElem();
+                active = false;
               });
             break;
             case 'prev':
@@ -63,9 +64,9 @@
                 hidePrevElem();
               });
               prevElem.css({ display: 'none' });
+              active = false;
             break;
           }
-          active = false;
         }
       }
 
