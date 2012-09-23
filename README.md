@@ -13,8 +13,8 @@ To see a list of available options run git-playback with --help.
 
 # Installing
 
-You can also install git-playback to make it work like every other git command. Simply copy git-playback.sh to where the rest of the git scripts are stored. There's also a make command for that:
+You can also install git-playback to make it work like every other git command. Just run:
 
     make install
 
-This will make 'git playback' command available.
+This will make 'git playback' available.
