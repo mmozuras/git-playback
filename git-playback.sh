@@ -14,6 +14,7 @@ s,start=      specify start revision. Default: root commit
 e,end=        specify end revision. Default: current branch
 t,style=      specify style to be used in output
 l,stylelist   list all available styles
+n,no-message  don't output commit message
 "
 eval "$(echo "$OPTS_SPEC" | git rev-parse --parseopt -- "$@" || echo exit $?)"
 
@@ -31,6 +32,7 @@ start_revision=`get_root_commit`
 end_revision=`get_git_branch`
 style='default'
 available_styles=(default dark far idea sunburst zenburn vs ascetic magula github googlecode brown_paper school_book ir_black solarized_dark solarized_light arta monokai xcode pojoaque tomorrow tomorrow-night tomorrow-night-blue tomorrow-night-eighties tomorrow-night-bright)
+message=true
 
 while [ $# -gt 0 ]; do
   opt="$1"
@@ -40,6 +42,7 @@ while [ $# -gt 0 ]; do
     -e) end_revision="$1"; shift;;
     -t) style="$1"; shift;;
     -l) echo ${available_styles[@]}; exit;;
+    -n) message=false; shift;;
     *) files+=("$1") ;;
   esac
 done
@@ -164,9 +167,11 @@ write_diff() {
 }
 
 write_commit_message() {
-  echo '<pre class="message" style="border-bottom: solid;border-bottom-width: 1px"><code class="no-highlight">' >> $output_file
-  eval "$(git log -1 --pretty=format:'<span>%h</span><span>: </span><span class="keyword">%s</span>' --abbrev-commit >> $output_file)"
-  echo '</code></pre>' >> $output_file
+  if $message; then
+    echo '<pre class="message" style="border-bottom: solid;border-bottom-width: 1px"><code class="no-highlight">' >> $output_file
+    eval "$(git log -1 --pretty=format:'<span>%h</span><span>: </span><span class="keyword">%s</span>' --abbrev-commit >> $output_file)"
+    echo '</code></pre>' >> $output_file
+  fi
 }
 
 write_start_revision() {
