@@ -44,7 +44,7 @@ while [ $# -gt 0 ]; do
     -e) end_revision="$1"; shift;;
     -t) style="$1"; shift;;
     -l) echo ${available_styles[@]}; exit;;
-    -n) message=false; shift;;
+    -n) message=false ;;
     *) files+=("$1") ;;
   esac
 done
