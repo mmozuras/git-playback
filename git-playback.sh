@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ef
 
 if [ $# -eq 0 ]; then
   set -- -h
